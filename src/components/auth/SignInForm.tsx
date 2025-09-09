@@ -19,6 +19,7 @@ import {
   SigninFormData,
   signinSchema,
 } from '@/utils/schemas/auth/signin.schema';
+import { toast } from 'react-toastify';
 
 export default function LoginForm() {
   const {
@@ -35,7 +36,9 @@ export default function LoginForm() {
   });
 
   // TODO: Implement sign in
-  const onSubmit = async (data: SigninFormData) => {};
+  const onSubmit = async (data: SigninFormData) => {
+    toast('Sign in functionality is not implemented yet.', { type: 'warning' });
+  };
 
   return (
     <Box
