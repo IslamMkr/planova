@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { User } from '@/types/user.types';
 import { LoginCredentials, RegisterData } from '@/types/auth.types';
