@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { updateSession } from '@/lib/supabase/middleware';
+import { updateSession } from '@/services/supabase/middleware';
 
 const PROTECTED_PREFIXES = ['/dashboard', '/profile', '/settings'];
 
@@ -16,6 +16,13 @@ export const middleware = async (req: NextRequest) => {
 
   if (needsAuth && !hasAuth) {
     const url = new URL('/sign-in', req.url);
+    url.searchParams.set('next', pathname + req.nextUrl.search);
+
+    return NextResponse.redirect(url);
+  }
+
+  if (!needsAuth && hasAuth) {
+    const url = new URL('/dashboard', req.url);
     url.searchParams.set('next', pathname + req.nextUrl.search);
 
     return NextResponse.redirect(url);

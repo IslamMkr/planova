@@ -1,7 +1,7 @@
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
 import { AuthProvider } from './AuthProvider';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/services/supabase/server';
 import { Slide, ToastContainer } from 'react-toastify';
 import theme from '../theme/theme';
 

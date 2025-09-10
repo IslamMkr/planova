@@ -2,15 +2,18 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/services/supabase/client';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
+import { toast } from 'react-toastify';
 
 export interface AuthContextProps {
   user: SupabaseUser | null;
+  signOut: () => Promise<void>;
 }
 
 export const AuthContext = React.createContext<AuthContextProps>({
   user: null,
+  signOut: async () => {},
 });
 
 export const useAuth = () => React.useContext(AuthContext);
@@ -42,10 +45,17 @@ export const AuthProvider = ({
     setUser(initialUser);
   }, [initialUser]);
 
-  const value = React.useMemo(
-    () => ({ user, isAuthenticated: !!user }),
-    [user],
-  );
+  const signOut = async () => {
+    try {
+      await supabase.auth.signOut(); // clears session (cookies/local)
+      router.replace('/sign-in'); // bounce to auth
+      toast.success('Signed out successfully');
+    } catch (e) {
+      toast.error('Failed to sign out');
+    }
+  };
+
+  const value = React.useMemo(() => ({ user, signOut }), [user]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -18,7 +18,7 @@ import {
   signupSchema,
 } from '@/utils/schemas/auth/signup.schema';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/services/supabase/client';
 import { toast } from 'react-toastify';
 
 export default function SignupForm() {

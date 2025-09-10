@@ -19,7 +19,7 @@ import {
   signinSchema,
 } from '@/utils/schemas/auth/signin.schema';
 import { toast } from 'react-toastify';
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/services/supabase/client';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const LoginForm = () => {
@@ -40,7 +40,6 @@ const LoginForm = () => {
     },
   });
 
-  // TODO: Implement sign in
   const onSubmit = async (credentials: SigninFormData) => {
     const { data, error } = await supabase.auth.signInWithPassword(credentials);
 
