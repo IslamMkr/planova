@@ -4,8 +4,8 @@ import { createClient } from '@/services/supabase/server';
 export const dynamic = 'force-dynamic'; // ensure per-request auth check
 
 const MissingPage = async ({ params }: { params: { missing?: string[] } }) => {
-  // If the unknown path is under /api, keep a real 404 (don’t redirect)
-  if (params.missing?.[0] === 'api') {
+  const { missing } = await params;
+  if (missing?.[0] === 'api') {
     notFound();
   }
 

@@ -63,7 +63,6 @@ const LoginForm = () => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        minHeight: '100vh',
         maxWidth: 600,
         p: 8,
       }}

@@ -1,14 +1,9 @@
 import type { Metadata } from 'next';
-import { Roboto } from 'next/font/google';
+import { Grid } from '@mui/material';
 import { Providers } from '@/providers/Providers';
+import Footer from '@/components/layouts/Footer';
+import Header from '@/components/layouts/Header';
 import './globals.css';
-
-const roboto = Roboto({
-  weight: ['300', '400', '500', '700'],
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-roboto',
-});
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -21,9 +16,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' className={roboto.variable}>
+    <html lang='en'>
+      <head>
+        <meta name='color-scheme' content='light dark' />
+        <meta name='theme-color' content='#ffffff' />
+      </head>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Grid container direction='column' minHeight='60vh'>
+            <Header />
+            {children}
+            <Footer />
+          </Grid>
+        </Providers>
       </body>
     </html>
   );

@@ -41,7 +41,6 @@ export default function SignupForm() {
     },
   });
 
-  // TODO: Implement signup
   const onSubmit = async (register: SignupFormData) => {
     const { data, error } = await supabase.auth.signUp({
       email: register.email,
@@ -73,7 +72,6 @@ export default function SignupForm() {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        minHeight: '100vh',
         maxWidth: 600,
         p: 8,
       }}
@@ -82,8 +80,6 @@ export default function SignupForm() {
         variant='h4'
         component='h1'
         sx={{
-          fontWeight: 600,
-          color: '#1f2937',
           mb: 2,
         }}
       >
@@ -93,9 +89,7 @@ export default function SignupForm() {
       <Typography
         variant='body1'
         sx={{
-          color: '#6b7280',
           mb: 4,
-          lineHeight: 1.6,
         }}
       >
         Unlock powerful planning tools and collaborate seamlessly. Create your
@@ -113,7 +107,6 @@ export default function SignupForm() {
           borderColor: '#d1d5db',
           color: '#374151',
           textTransform: 'none',
-          fontSize: '16px',
           '&:hover': {
             borderColor: '#9ca3af',
             bgcolor: '#f9fafb',
@@ -218,9 +211,6 @@ export default function SignupForm() {
                     checked={field.value}
                     sx={{
                       color: errors.agreeToTerms ? '#ef4444' : '#d1d5db',
-                      '&.Mui-checked': {
-                        color: '#6366f1',
-                      },
                     }}
                   />
                 }
@@ -230,7 +220,6 @@ export default function SignupForm() {
                     <Link
                       href='/terms-and-conditions'
                       sx={{
-                        color: '#6366f1',
                         textDecoration: 'none',
                         '&:hover': {
                           textDecoration: 'underline',
