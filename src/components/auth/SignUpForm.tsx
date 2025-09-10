@@ -17,8 +17,15 @@ import {
   SignupFormData,
   signupSchema,
 } from '@/utils/schemas/auth/signup.schema';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
+import { toast } from 'react-toastify';
 
 export default function SignupForm() {
+  const router = useRouter();
+  const next = useSearchParams().get('next') || '/dashboard';
+  const supabase = createClient();
+
   const {
     control,
     handleSubmit,
@@ -35,7 +42,29 @@ export default function SignupForm() {
   });
 
   // TODO: Implement signup
-  const onSubmit = async (data: SignupFormData) => {};
+  const onSubmit = async (register: SignupFormData) => {
+    const { data, error } = await supabase.auth.signUp({
+      email: register.email,
+      password: register.password,
+      options: {
+        emailRedirectTo: 'https://localhost:3000/welcome',
+      },
+    });
+
+    if (error || !data?.user) {
+      router.replace(next);
+      toast('Sign up failed. Please try again.', {
+        type: 'error',
+      });
+      return;
+    }
+
+    toast('Sign up successful! Please check your email to confirm.', {
+      type: 'success',
+    });
+
+    router.replace('/sign-in');
+  };
 
   return (
     <Box

@@ -1,51 +1,51 @@
 'use client';
 
 import React from 'react';
-import { User } from '@/types/user.types';
-import { LoginCredentials, RegisterData } from '@/types/auth.types';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 export interface AuthContextProps {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login?: (credentials: LoginCredentials) => Promise<void>;
-  logout?: () => void;
-  register?: (data: RegisterData) => Promise<void>;
+  user: SupabaseUser | null;
 }
 
 export const AuthContext = React.createContext<AuthContextProps>({
   user: null,
-  isAuthenticated: false,
-  isLoading: false,
 });
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = React.useState<User | null>(null);
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
-  const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
+export const useAuth = () => React.useContext(AuthContext);
+
+export const AuthProvider = ({
+  initialUser,
+  children,
+}: {
+  initialUser: SupabaseUser | null;
+  children: React.ReactNode;
+}) => {
+  const [user, setUser] = React.useState<SupabaseUser | null>(initialUser);
+  const router = useRouter();
+  const supabase = React.useMemo(() => createClient(), []);
 
   React.useEffect(() => {
-    // Implement logic to check if user is authenticated
-    setIsLoading(false);
-  }, []);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      // re-run server components → new initialUser
+      router.refresh();
+    });
 
-  const login = async (credentials: LoginCredentials) => {
-    // Implement login logic here
-  };
+    return () => subscription.unsubscribe();
+  }, [supabase, router]);
 
-  const register = async (data: RegisterData) => {
-    // Implement register logic here
-  };
+  // When server re-hydrates with a new user, update local state
+  React.useEffect(() => {
+    setUser(initialUser);
+  }, [initialUser]);
 
-  const logout = () => {
-    // Implement logout logic here
-  };
-
-  return (
-    <AuthContext.Provider
-      value={{ user, isAuthenticated, isLoading, login, logout, register }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = React.useMemo(
+    () => ({ user, isAuthenticated: !!user }),
+    [user],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

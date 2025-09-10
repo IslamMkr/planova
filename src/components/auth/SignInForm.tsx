@@ -12,7 +12,6 @@ import {
   Link,
   TextField,
   Typography,
-  Avatar,
 } from '@mui/material';
 import { Google } from '@mui/icons-material';
 import {
@@ -20,8 +19,14 @@ import {
   signinSchema,
 } from '@/utils/schemas/auth/signin.schema';
 import { toast } from 'react-toastify';
+import { createClient } from '@/lib/supabase/client';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function LoginForm() {
+const LoginForm = () => {
+  const router = useRouter();
+  const next = useSearchParams().get('next') || '/dashboard';
+  const supabase = createClient();
+
   const {
     control,
     handleSubmit,
@@ -36,8 +41,20 @@ export default function LoginForm() {
   });
 
   // TODO: Implement sign in
-  const onSubmit = async (data: SigninFormData) => {
-    toast('Sign in functionality is not implemented yet.', { type: 'warning' });
+  const onSubmit = async (credentials: SigninFormData) => {
+    const { data, error } = await supabase.auth.signInWithPassword(credentials);
+
+    if (!error && data?.user) {
+      router.replace(next);
+      toast('Sign in successful!', {
+        type: 'success',
+      });
+    } else {
+      console.warn('Sign in error:', error);
+      toast('Sign in failed. Please check your credentials.', {
+        type: 'error',
+      });
+    }
   };
 
   return (
@@ -224,4 +241,6 @@ export default function LoginForm() {
       </Typography>
     </Box>
   );
-}
+};
+
+export default LoginForm;
