@@ -1,24 +1,23 @@
+'use client';
+
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { AuthProvider } from './AuthProvider';
-import { createClient } from '@/services/supabase/server';
 import { Slide, ToastContainer } from 'react-toastify';
 import AppThemeProvider from './AppThemeProvider';
+import { User } from '@supabase/supabase-js';
 
 import 'react-toastify/ReactToastify.css';
 
-export const Providers = async ({
-  children,
-}: {
+interface ProvidersProps {
   children: React.ReactNode;
-}) => {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-  const user = data?.user ?? null;
+  initialUser: User | null;
+}
 
+export const Providers = ({ children, initialUser }: ProvidersProps) => {
   return (
     <AppRouterCacheProvider>
       <AppThemeProvider>
-        <AuthProvider initialUser={user}>{children}</AuthProvider>
+        <AuthProvider initialUser={initialUser}>{children}</AuthProvider>
         <ToastContainer
           position='bottom-center'
           autoClose={3000}
